@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		9524A20F1AB97BAE00DC8FDA /* DNUnAuthorizedTipsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9524A20E1AB97BAE00DC8FDA /* DNUnAuthorizedTipsView.m */; };
-		954E584E1AA96ABE00E481C4 /* DNAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 954E584D1AA96ABE00E481C4 /* DNAsset.m */; };
 		955F11771AA9D72300C9AC42 /* NSURL+DNIMagePickerUrlEqual.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F11761AA9D72300C9AC42 /* NSURL+DNIMagePickerUrlEqual.m */; };
 		955F117E1AA9DAF600C9AC42 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F117D1AA9DAF600C9AC42 /* InfoViewController.m */; };
 		955F11811AA9FB6A00C9AC42 /* CollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 955F11801AA9FB6A00C9AC42 /* CollectionViewController.m */; };
@@ -38,6 +37,11 @@
 		959A69E61AA5F3A000ED8A3A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 959A69E51AA5F3A000ED8A3A /* Images.xcassets */; };
 		959A69E91AA5F3A000ED8A3A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 959A69E71AA5F3A000ED8A3A /* LaunchScreen.xib */; };
 		959A69F51AA5F3A000ED8A3A /* ImagePickerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 959A69F41AA5F3A000ED8A3A /* ImagePickerTests.m */; };
+		CDAE3B641BFC889100FBC2D1 /* UICollectionView+Convenience.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAE3B631BFC889100FBC2D1 /* UICollectionView+Convenience.m */; };
+		CDAE3B7D1BFC896400FBC2D1 /* DNPickerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAE3B7C1BFC896400FBC2D1 /* DNPickerHelper.m */; };
+		CDAE3B811BFC899800FBC2D1 /* DNAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAE3B801BFC899800FBC2D1 /* DNAlbum.m */; };
+		CDAE3B841BFC89BD00FBC2D1 /* DNAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAE3B831BFC89BD00FBC2D1 /* DNAsset.m */; };
+		CDAE3B861BFC90A600FBC2D1 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDAE3B851BFC90A600FBC2D1 /* Photos.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,8 +57,6 @@
 /* Begin PBXFileReference section */
 		9524A20D1AB97BAE00DC8FDA /* DNUnAuthorizedTipsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DNUnAuthorizedTipsView.h; sourceTree = "<group>"; };
 		9524A20E1AB97BAE00DC8FDA /* DNUnAuthorizedTipsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNUnAuthorizedTipsView.m; sourceTree = "<group>"; };
-		954E584C1AA96ABE00E481C4 /* DNAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DNAsset.h; sourceTree = "<group>"; };
-		954E584D1AA96ABE00E481C4 /* DNAsset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNAsset.m; sourceTree = "<group>"; };
 		955B2C571AAC414B0043B4DE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = ImagePicker/en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		955B2C581AAC414E0043B4DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ImagePicker/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		955F11751AA9D72300C9AC42 /* NSURL+DNIMagePickerUrlEqual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+DNIMagePickerUrlEqual.h"; sourceTree = "<group>"; };
@@ -113,6 +115,15 @@
 		959A69EE1AA5F3A000ED8A3A /* ImagePickerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImagePickerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		959A69F31AA5F3A000ED8A3A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		959A69F41AA5F3A000ED8A3A /* ImagePickerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagePickerTests.m; sourceTree = "<group>"; };
+		CDAE3B621BFC889100FBC2D1 /* UICollectionView+Convenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+Convenience.h"; sourceTree = "<group>"; };
+		CDAE3B631BFC889100FBC2D1 /* UICollectionView+Convenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+Convenience.m"; sourceTree = "<group>"; };
+		CDAE3B7B1BFC896400FBC2D1 /* DNPickerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DNPickerHelper.h; sourceTree = "<group>"; };
+		CDAE3B7C1BFC896400FBC2D1 /* DNPickerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNPickerHelper.m; sourceTree = "<group>"; };
+		CDAE3B7F1BFC899800FBC2D1 /* DNAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DNAlbum.h; sourceTree = "<group>"; };
+		CDAE3B801BFC899800FBC2D1 /* DNAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNAlbum.m; sourceTree = "<group>"; };
+		CDAE3B821BFC89BD00FBC2D1 /* DNAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DNAsset.h; sourceTree = "<group>"; };
+		CDAE3B831BFC89BD00FBC2D1 /* DNAsset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNAsset.m; sourceTree = "<group>"; };
+		CDAE3B851BFC90A600FBC2D1 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +131,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDAE3B861BFC90A600FBC2D1 /* Photos.framework in Frameworks */,
 				9571F31C1AA751D7006ACEBD /* AssetsLibrary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -139,7 +151,9 @@
 			children = (
 				9571F30B1AA750E2006ACEBD /* Extensions */,
 				9571F2EE1AA74BA6006ACEBD /* Assets */,
+				CDAE3B7E1BFC899800FBC2D1 /* Models */,
 				9571F2D91AA74B7D006ACEBD /* Views */,
+				CDAE3B7A1BFC896400FBC2D1 /* Support */,
 				9571F2CD1AA74B6B006ACEBD /* DNImagePickerController.h */,
 				9571F2CE1AA74B6B006ACEBD /* DNImagePickerController.m */,
 				9571F2CF1AA74B6B006ACEBD /* DNAlbumTableViewController.h */,
@@ -148,8 +162,6 @@
 				9571F2D21AA74B6B006ACEBD /* DNImageFlowViewController.m */,
 				9571F2D31AA74B6B006ACEBD /* DNPhotoBrowser.h */,
 				9571F2D41AA74B6B006ACEBD /* DNPhotoBrowser.m */,
-				954E584C1AA96ABE00E481C4 /* DNAsset.h */,
-				954E584D1AA96ABE00E481C4 /* DNAsset.m */,
 			);
 			path = DNImagePicker;
 			sourceTree = "<group>";
@@ -191,6 +203,8 @@
 			children = (
 				9571F30C1AA7510B006ACEBD /* UIViewController+DNImagePicker.h */,
 				9571F30D1AA7510B006ACEBD /* UIViewController+DNImagePicker.m */,
+				CDAE3B621BFC889100FBC2D1 /* UICollectionView+Convenience.h */,
+				CDAE3B631BFC889100FBC2D1 /* UICollectionView+Convenience.m */,
 				955F11751AA9D72300C9AC42 /* NSURL+DNIMagePickerUrlEqual.h */,
 				955F11761AA9D72300C9AC42 /* NSURL+DNIMagePickerUrlEqual.m */,
 				9571F30E1AA7510B006ACEBD /* UIColor+Hex.h */,
@@ -204,6 +218,7 @@
 		959A69CC1AA5F3A000ED8A3A = {
 			isa = PBXGroup;
 			children = (
+				CDAE3B851BFC90A600FBC2D1 /* Photos.framework */,
 				9571F31B1AA751D7006ACEBD /* AssetsLibrary.framework */,
 				959A69D71AA5F3A000ED8A3A /* ImagePicker */,
 				959A69F11AA5F3A000ED8A3A /* ImagePickerTests */,
@@ -269,6 +284,26 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		CDAE3B7A1BFC896400FBC2D1 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				CDAE3B7B1BFC896400FBC2D1 /* DNPickerHelper.h */,
+				CDAE3B7C1BFC896400FBC2D1 /* DNPickerHelper.m */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		CDAE3B7E1BFC899800FBC2D1 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CDAE3B7F1BFC899800FBC2D1 /* DNAlbum.h */,
+				CDAE3B801BFC899800FBC2D1 /* DNAlbum.m */,
+				CDAE3B821BFC89BD00FBC2D1 /* DNAsset.h */,
+				CDAE3B831BFC89BD00FBC2D1 /* DNAsset.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -318,7 +353,7 @@
 				TargetAttributes = {
 					959A69D41AA5F3A000ED8A3A = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = ZDN53W6ZL8;
+						DevelopmentTeam = GP99K3995A;
 					};
 					959A69ED1AA5F3A000ED8A3A = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -377,10 +412,12 @@
 				9571F31F1AA75260006ACEBD /* JKPromptView.m in Sources */,
 				9571F2D71AA74B6B006ACEBD /* DNImageFlowViewController.m in Sources */,
 				9571F3131AA7510B006ACEBD /* UIColor+Hex.m in Sources */,
+				CDAE3B841BFC89BD00FBC2D1 /* DNAsset.m in Sources */,
 				9571F2D81AA74B6B006ACEBD /* DNPhotoBrowser.m in Sources */,
 				9571F2ED1AA74B9A006ACEBD /* DNBadgeLabel.m in Sources */,
 				9571F2E71AA74B9A006ACEBD /* MWTapDetectingImageView.m in Sources */,
 				9524A20F1AB97BAE00DC8FDA /* DNUnAuthorizedTipsView.m in Sources */,
+				CDAE3B7D1BFC896400FBC2D1 /* DNPickerHelper.m in Sources */,
 				959A69E11AA5F3A000ED8A3A /* ViewController.m in Sources */,
 				9571F2D61AA74B6B006ACEBD /* DNAlbumTableViewController.m in Sources */,
 				955F11811AA9FB6A00C9AC42 /* CollectionViewController.m in Sources */,
@@ -388,7 +425,7 @@
 				9571F3141AA7510B006ACEBD /* UIView+DNImagePicker.m in Sources */,
 				959A69DE1AA5F3A000ED8A3A /* AppDelegate.m in Sources */,
 				9571F2EC1AA74B9A006ACEBD /* DNFullImageButton.m in Sources */,
-				954E584E1AA96ABE00E481C4 /* DNAsset.m in Sources */,
+				CDAE3B811BFC899800FBC2D1 /* DNAlbum.m in Sources */,
 				9571F2EB1AA74B9A006ACEBD /* DNSendButton.m in Sources */,
 				959A69DB1AA5F3A000ED8A3A /* main.m in Sources */,
 				9571F2D51AA74B6B006ACEBD /* DNImagePickerController.m in Sources */,
@@ -396,6 +433,7 @@
 				9571F2E81AA74B9A006ACEBD /* DNBrowserCell.m in Sources */,
 				955F117E1AA9DAF600C9AC42 /* InfoViewController.m in Sources */,
 				955F11841AA9FB8C00C9AC42 /* CollectionViewCell.m in Sources */,
+				CDAE3B641BFC889100FBC2D1 /* UICollectionView+Convenience.m in Sources */,
 				9571F2E91AA74B9A006ACEBD /* DNAssetsViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,7 +10,7 @@
 
 
 @interface DNAssetsViewCell ()
-@property (nonatomic, strong) UIImageView *imageView;
+
 @property (nonatomic, strong) UIButton *checkButton;
 @property (nonatomic, strong) UIImageView *checkImageView;
 
@@ -126,11 +126,18 @@
 {
     self.isSelected = seleted;
     self.asset = asset;
-    CGImageRef thumbnailImageRef = [asset thumbnail];
-    if (thumbnailImageRef) {
-        self.imageView.image = [UIImage imageWithCGImage:thumbnailImageRef];
-    } else {
-        self.imageView.image = [UIImage imageNamed:@"assets_placeholder_picture"];
+    
+    if ([asset isKindOfClass:[ALAsset class]]) {
+        
+        CGImageRef thumbnailImageRef = [asset thumbnail];
+        if (thumbnailImageRef) {
+            self.imageView.image = [UIImage imageWithCGImage:thumbnailImageRef];
+        } else {
+            self.imageView.image = [UIImage imageNamed:@"assets_placeholder_picture"];
+        }
+        
+    }else if ([asset isKindOfClass:NSClassFromString(@"PHAsset")]){
+          
     }
 }
 

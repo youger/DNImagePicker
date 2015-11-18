@@ -12,6 +12,8 @@
 #import "DNSendButton.h"
 #import "DNFullImageButton.h"
 #import "DNBrowserCell.h"
+#import "DNPickerHelper.h"
+
 @interface DNPhotoBrowser () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 {
     BOOL _statusBarShouldBeHidden;
@@ -94,7 +96,7 @@
         _viewIsActive = NO;
         [self restorePreviousNavBarAppearance:animated];
     }
-
+    
     [self.navigationController.navigationBar.layer removeAllAnimations];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [self setControlsHidden:NO animated:NO];
@@ -142,11 +144,12 @@
     UIBarButtonItem *item3 = [[UIBarButtonItem alloc] initWithCustomView:self.sendButton];
     UIBarButtonItem *item4 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     item4.width = -10;
-
+    
     [self.toolbar setItems:@[item1,item2,item3,item4]];
 }
 
 - (void)updateNavigationBarAndToolBar {
+    
     NSUInteger totalNumber = self.photoDataSources.count;
     self.title = [NSString stringWithFormat:@"%@/%@",@(self.currentIndex+1),@(totalNumber)];
     BOOL isSeleted = NO;
@@ -157,17 +160,12 @@
     self.fullImageButton.selected = self.isFullImage;
     
     if (self.isFullImage) {
-        ALAsset *asset = self.photoDataSources[self.currentIndex];
-        NSInteger size = (NSUInteger)(asset.defaultRepresentation.size/1024);
-        CGFloat imageSize = (CGFloat)size;
-        NSString *imageSizeString;
-        if (size > 1024) {
-            imageSize = imageSize/1024.0f;
-            imageSizeString = [NSString stringWithFormat:@"(%.1fM)",imageSize];
-        } else {
-            imageSizeString = [NSString stringWithFormat:@"(%@K)",@(size)];
-        }
-        self.fullImageButton.text = imageSizeString;
+        
+        id asset = self.photoDataSources[self.currentIndex];
+        [DNPickerHelper fetchImageSizeWithAsset:asset imageSizeResultHandler:^(CGFloat imageSize, NSString *sizeString) {
+            
+            self.fullImageButton.text = sizeString;
+        }];
     }
 }
 
@@ -392,7 +390,7 @@
         NSInteger page = offsetX / itemWidth;
         [self didScrollToPage:page];
     }
-
+    
     [self.fullImageButton shouldAnimating:NO];
 }
 

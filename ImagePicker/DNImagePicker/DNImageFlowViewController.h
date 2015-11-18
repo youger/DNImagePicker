@@ -8,7 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "DNPickerHelper.h"
+
 @interface DNImageFlowViewController : UIViewController
 
+- (instancetype)initWithIdentifier:(NSString *)identifier;
+- (instancetype)initWithAlbum:(DNAlbum *)album;
 - (instancetype)initWithGroupURL:(NSURL *)assetsGroupURL;
+
 @end

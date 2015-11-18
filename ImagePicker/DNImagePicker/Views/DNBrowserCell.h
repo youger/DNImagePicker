@@ -14,6 +14,6 @@
 
 @property (nonatomic, weak) DNPhotoBrowser *photoBrowser;
 
-@property (nonatomic, strong) ALAsset *asset;
+@property (nonatomic, strong) id asset;
 
 @end

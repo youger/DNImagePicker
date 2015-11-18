@@ -16,14 +16,18 @@
 
 - (void)didSelectItemAssetsViewCell:(DNAssetsViewCell *)assetsCell;
 - (void)didDeselectItemAssetsViewCell:(DNAssetsViewCell *)assetsCell;
+
 @end
 
 @interface DNAssetsViewCell : UICollectionViewCell
 
-@property (nonatomic, strong) ALAsset *asset;
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) id asset;
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, weak) id<DNAssetsViewCellDelegate> delegate;
 
-- (void)fillWithAsset:(ALAsset *)asset isSelected:(BOOL)seleted;
+@property (nonatomic, copy) NSString *representedAssetIdentifier;
+
+- (void)fillWithAsset:(id )asset isSelected:(BOOL)seleted;
 
 @end

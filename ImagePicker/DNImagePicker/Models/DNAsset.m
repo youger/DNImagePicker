@@ -8,6 +8,7 @@
 
 #import "DNAsset.h"
 #import "NSURL+DNIMagePickerUrlEqual.h"
+
 @implementation DNAsset
 
 - (BOOL)isEqual:(id)other

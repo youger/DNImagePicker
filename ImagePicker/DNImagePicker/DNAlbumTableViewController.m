@@ -12,25 +12,36 @@
 #import "DNImageFlowViewController.h"
 #import "UIViewController+DNImagePicker.h"
 #import "DNUnAuthorizedTipsView.h"
+#import "DNPickerHelper.h"
 
 static NSString* const dnalbumTableViewCellReuseIdentifier = @"dnalbumTableViewCellReuseIdentifier";
 
 @interface DNAlbumTableViewController ()
+
 @property (nonatomic, strong) ALAssetsLibrary *assetsLibrary;
 @property (nonatomic, strong) NSArray *groupTypes;
 
 #pragma mark - dataSources
-@property (nonatomic, strong) NSArray *assetsGroups;
+@property (nonatomic, strong) NSArray * assetsGroups;
+@property (strong, nonatomic) NSArray * assetsCollection;
+@property (strong, nonatomic) NSMutableDictionary *sectionPosterImage;
+
 @end
 
 @implementation DNAlbumTableViewController
 
 #pragma mark - life cycle
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
+    
     [self setupView];
     [self setupData];
     [self loadData];
+}
+
+- (void)dealloc {
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -38,9 +49,23 @@ static NSString* const dnalbumTableViewCellReuseIdentifier = @"dnalbumTableViewC
     // Dispose of any resources that can be recreated.
 }
 
+
+- (void)reloadTableView{
+    
+    _assetsCollection = [DNPickerHelper fetchAlbumList];
+    [self.tableView reloadData];
+}
+
 #pragma mark - mark setup Data and View
+
 - (void)loadData
 {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    
+    self.assetsCollection = [DNPickerHelper fetchAlbumList];
+    [self.tableView reloadData];
+    
+#else
     __weak typeof(self) weakSelf = self;
     [self loadAssetsGroupsWithTypes:self.groupTypes completion:^(NSArray *groupAssets)
      {
@@ -48,12 +73,16 @@ static NSString* const dnalbumTableViewCellReuseIdentifier = @"dnalbumTableViewC
          strongSelf.assetsGroups = groupAssets;
          [strongSelf.tableView reloadData];
      }];
+    
+#endif
 }
 
 - (void)setupData
 {
     self.groupTypes = @[@(ALAssetsGroupAll)];
     self.assetsGroups  = [NSMutableArray new];
+    
+    self.assetsCollection = [NSMutableArray array];
 }
 
 - (void)setupView
@@ -68,8 +97,8 @@ static NSString* const dnalbumTableViewCellReuseIdentifier = @"dnalbumTableViewC
     self.tableView.tableFooterView = view;
 }
 
-
 #pragma mark - ui actions
+
 - (void)cancelAction:(id)sender
 {
     DNImagePickerController *navController = [self dnImagePickerController];
@@ -79,6 +108,7 @@ static NSString* const dnalbumTableViewCellReuseIdentifier = @"dnalbumTableViewC
 }
 
 #pragma mark - getter/setter
+
 - (ALAssetsLibrary *)assetsLibrary
 {
     if (nil == _assetsLibrary) {
@@ -89,7 +119,6 @@ static NSString* const dnalbumTableViewCellReuseIdentifier = @"dnalbumTableViewC
 
 - (DNImagePickerController *)dnImagePickerController
 {
-    
     if (nil == self.navigationController
         ||
         ![self.navigationController isKindOfClass:[DNImagePickerController class]])
@@ -122,18 +151,48 @@ static NSString* const dnalbumTableViewCellReuseIdentifier = @"dnalbumTableViewC
 {
     DNUnAuthorizedTipsView *view  = [[DNUnAuthorizedTipsView alloc] initWithFrame:self.tableView.frame];
     self.tableView.backgroundView = view;
-//    [self.tableView addSubview:view];
+    //[self.tableView addSubview:view];
 }
 
 #pragma mark - Table view data source
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.assetsGroups.count;
+    NSInteger numberOfRows = 0;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    
+    if (_assetsCollection == nil) {
+        
+        numberOfRows = 0;
+    }else{
+        numberOfRows = _assetsCollection.count;
+    }
+    
+#else
+    
+    numberOfRows = self.assetsGroups.count;
+#endif
+    return numberOfRows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:dnalbumTableViewCellReuseIdentifier forIndexPath:indexPath];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    
+    DNAlbum * album = _assetsCollection[indexPath.row];
+    cell.textLabel.text = album.name;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)album.count];
+    
+    [DNPickerHelper fetchImageWithAsset:album.results.lastObject targetSize:CGSizeMake(60.f, 60.) imageResultHandler:^(UIImage * image) {
+        
+        cell.imageView.image = image;
+    }];
+    
+#else
+    
     ALAssetsGroup *group = self.assetsGroups[indexPath.row];
     cell.textLabel.attributedText = [self albumTitle:group];
     
@@ -145,6 +204,8 @@ static NSString* const dnalbumTableViewCellReuseIdentifier = @"dnalbumTableViewC
             blockCell.imageView.image = [UIImage imageWithCGImage:result.thumbnail];
         }
     }];
+    
+#endif
     return cell;
 }
 
@@ -161,13 +222,22 @@ static NSString* const dnalbumTableViewCellReuseIdentifier = @"dnalbumTableViewC
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    
+    DNImageFlowViewController *imageFlowViewController = [[DNImageFlowViewController alloc] initWithAlbum:_assetsCollection[indexPath.row]];
+    [self.navigationController pushViewController:imageFlowViewController animated:YES];
+    
+#else
+    
     ALAssetsGroup *group = self.assetsGroups[indexPath.row];
     NSURL *url = [group valueForProperty:ALAssetsGroupPropertyURL];
     DNImageFlowViewController *imageFlowViewController = [[DNImageFlowViewController alloc] initWithGroupURL:url];
     [self.navigationController pushViewController:imageFlowViewController animated:YES];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+#endif
 }
-
 
 #pragma mark - get assetGroups
 - (void)loadAssetsGroupsWithTypes:(NSArray *)types completion:(void (^)(NSArray *assetsGroups))completion

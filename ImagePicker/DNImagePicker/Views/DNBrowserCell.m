@@ -7,12 +7,16 @@
 //
 
 #import "DNBrowserCell.h"
-#import "MWTapDetectingImageView.h"
 #import "DNPhotoBrowser.h"
+#import "MWTapDetectingImageView.h"
+#import "DNPickerHelper.h"
+#import "UIView+DNImagePicker.h"
 
 @interface DNBrowserCell () <UIScrollViewDelegate,MWTapDetectingImageViewDelegate>
 @property (nonatomic, strong) UIScrollView *zoomingScrollView;
 @property (nonatomic, strong) MWTapDetectingImageView *photoImageView;
+
+@property (assign, nonatomic) int requestID;
 
 @end
 
@@ -29,7 +33,9 @@
 }
 
 - (void)prepareForReuse {
+    
     [super prepareForReuse];
+    
     self.photoImageView.image = nil;
     [self.photoImageView removeFromSuperview];
     [self.zoomingScrollView removeFromSuperview];
@@ -37,10 +43,18 @@
     self.photoImageView = nil;
     self.photoBrowser = nil;
     self.asset = nil;
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    if (_requestID != 0) {
+        
+        [[PHImageManager defaultManager] cancelImageRequest:_requestID];
+        _requestID = 0;
+    }
+#endif
 }
 
 #pragma mark - set
-- (void)setAsset:(ALAsset *)asset
+- (void)setAsset:(id)asset
 {
     if (_asset != asset) {
         _asset = asset;
@@ -48,25 +62,42 @@
     }
 }
 
+- (void)layoutImageViewWithImage:(UIImage *)image
+{
+    // Set zoom to minimum zoom
+    self.photoImageView.image = image;
+    self.photoImageView.hidden = NO;
+    CGRect photoImageViewFrame = CGRectZero;
+    photoImageViewFrame.size = image.size;
+    self.photoImageView.frame = photoImageViewFrame;
+    self.zoomingScrollView.contentSize = photoImageViewFrame.size;
+    
+    [self setMaxMinZoomScalesForCurrentBounds];
+    [self setNeedsLayout];
+}
+
 // Get and display image
 - (void)displayImage {
+    
     self.zoomingScrollView.maximumZoomScale = 1;
     self.zoomingScrollView.minimumZoomScale = 1;
     self.zoomingScrollView.zoomScale = 1;
     self.zoomingScrollView.contentSize = CGSizeMake(0, 0);
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    
+    _requestID = [DNPickerHelper fetchImageWithAsset:_asset targetSize:_zoomingScrollView.size needHighQuality:YES synchronous:NO imageResultHandler:^(UIImage * image) {
+        
+        self.requestID = 0;
+        if (image == nil) return ;
+        [self layoutImageViewWithImage:image];
+    }];
+    
+#else
     UIImage *img = [UIImage imageWithCGImage:[[self.asset defaultRepresentation] fullScreenImage]];
-    self.photoImageView.image = img;
-    self.photoImageView.hidden = NO;
-    CGRect photoImageViewFrame;
-    photoImageViewFrame.origin = CGPointZero;
-    photoImageViewFrame.size = img.size;
-    self.photoImageView.frame = photoImageViewFrame;
-    self.zoomingScrollView.contentSize = photoImageViewFrame.size;
-            
-    // Set zoom to minimum zoom
-    [self setMaxMinZoomScalesForCurrentBounds];
-    [self setNeedsLayout];
+    [self layoutImageViewWithImage:img];
+    
+#endif
 }
 
 
@@ -92,13 +123,14 @@
         _zoomingScrollView.showsHorizontalScrollIndicator = NO;
         _zoomingScrollView.showsVerticalScrollIndicator = NO;
         _zoomingScrollView.decelerationRate = UIScrollViewDecelerationRateFast;
-            [self addSubview:_zoomingScrollView];
+        [self addSubview:_zoomingScrollView];
     }
     return _zoomingScrollView;
 }
 
 #pragma mark - Setup
 - (CGFloat)initialZoomScaleWithMinScale {
+    
     CGFloat zoomScale = self.zoomingScrollView.minimumZoomScale;
     // Zoom image to fill if the aspect ratios are fairly similar
     CGSize boundsSize = self.zoomingScrollView.bounds.size;
@@ -107,12 +139,12 @@
     CGFloat imageAR = imageSize.width / imageSize.height;
     CGFloat xScale = boundsSize.width / imageSize.width;    // the scale needed to perfectly fit the image width-wise
     CGFloat yScale = boundsSize.height / imageSize.height;  // the scale needed to perfectly fit the image height-wise
-        // Zooms standard portrait images on a 3.5in screen but not on a 4in screen.
+    // Zooms standard portrait images on a 3.5in screen but not on a 4in screen.
     if (ABS(boundsAR - imageAR) < 0.17) {
         zoomScale = MAX(xScale, yScale);
-            // Ensure we don't zoom in or out too far, just in case
+        // Ensure we don't zoom in or out too far, just in case
         zoomScale = MIN(MAX(self.zoomingScrollView.minimumZoomScale, zoomScale), self.zoomingScrollView.maximumZoomScale);
-        }
+    }
     return zoomScale;
 }
 
@@ -160,7 +192,7 @@
     if (self.zoomingScrollView.zoomScale != minScale) {
         // Centralise
         self.zoomingScrollView.contentOffset = CGPointMake((imageSize.width * self.zoomingScrollView.zoomScale - boundsSize.width) / 2.0,
-                                         (imageSize.height * self.zoomingScrollView.zoomScale - boundsSize.height) / 2.0);
+                                                           (imageSize.height * self.zoomingScrollView.zoomScale - boundsSize.height) / 2.0);
         // Disable scrolling initially until the first pinch to fix issues with swiping on an initally zoomed in photo
         self.zoomingScrollView.scrollEnabled = NO;
     }

@@ -10,8 +10,7 @@
 #import "DNImagePickerController.h"
 #import "DNAlbumTableViewController.h"
 #import "DNImageFlowViewController.h"
-
-NSString *kDNImagePickerStoredGroupKey = @"com.dennis.kDNImagePickerStoredGroup";
+#import "DNPickerHelper.h"
 
 ALAssetsFilter * ALAssetsFilterFromDNImagePickerControllerFilterType(DNImagePickerFilterType type)
 {
@@ -34,9 +33,106 @@ ALAssetsFilter * ALAssetsFilterFromDNImagePickerControllerFilterType(DNImagePick
 @property (nonatomic, weak) id<UINavigationControllerDelegate> navDelegate;
 @property (nonatomic, assign) BOOL isDuringPushAnimation;
 
+@property (strong, nonatomic) NSArray * assetsCollection;
+
 @end
 
 @implementation DNImagePickerController
+
+- (void)chargeAuthorizationStatus : (PHAuthorizationStatus)status{
+    
+    DNAlbumTableViewController * viewController = self.viewControllers.firstObject;
+    
+    if (viewController == nil){
+        
+        return;
+    }else{
+        
+        [self showAlbumList];
+    }
+    switch (status) {
+        case PHAuthorizationStatusAuthorized:
+            
+            [viewController reloadTableView];
+            break;
+            
+        case PHAuthorizationStatusDenied:
+        case PHAuthorizationStatusRestricted:
+            
+            [viewController showUnAuthorizedTipsView];
+            break;
+            
+        case PHAuthorizationStatusNotDetermined:
+            
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                
+                if (status == PHAuthorizationStatusNotDetermined) {
+                    return ;
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self chargeAuthorizationStatus:status];
+                });
+            }];
+    }
+}
+
+- (void)authorizationPhotoLibrary
+{
+    NSString * albumIdentifier = [DNPickerHelper fetchAlbumIdentifier];
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    
+    if (albumIdentifier == nil) {
+        
+        [self showAlbumList];
+        [self chargeAuthorizationStatus:[PHPhotoLibrary authorizationStatus]];
+        
+    }else{
+        
+        if (albumIdentifier.length == 0) {
+            
+            [self showAlbumList];
+            [self chargeAuthorizationStatus:[PHPhotoLibrary authorizationStatus]];
+        }else{
+            [self showImageFlow:nil];
+        }
+    }
+    
+#else
+    
+    if (albumIdentifier.length <= 0) {
+        
+        [self showAlbumList];
+        
+    } else {
+        
+        ALAssetsLibrary *assetsLibiary = [[ALAssetsLibrary alloc] init];
+        [assetsLibiary enumerateGroupsWithTypes:ALAssetsGroupAll
+                                     usingBlock:^(ALAssetsGroup *assetsGroup, BOOL *stop){
+                                         
+                                         if (assetsGroup == nil && *stop ==  NO) {
+                                             [self showAlbumList];
+                                         }
+                                         
+                                         NSString *assetsGroupID= [assetsGroup valueForProperty:ALAssetsGroupPropertyPersistentID];
+                                         if ([assetsGroupID isEqualToString:albumIdentifier]) {
+                                             *stop = YES;
+                                             NSURL *assetsGroupURL = [assetsGroup valueForProperty:ALAssetsGroupPropertyURL];
+                                             
+                                             [self showImageFlow:assetsGroupURL];
+                                         }
+                                         
+                                     }
+                                   failureBlock:^(NSError *error){
+                                       
+                                       [self showAlbumList];
+                                       
+                                   }];
+    }
+#endif
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -46,34 +142,7 @@ ALAssetsFilter * ALAssetsFilterFromDNImagePickerControllerFilterType(DNImagePick
     }
     
     self.interactivePopGestureRecognizer.delegate = self;
-    
-    NSString *propwetyID = [[NSUserDefaults standardUserDefaults] objectForKey:kDNImagePickerStoredGroupKey];
-
-    if (propwetyID.length <= 0) {
-        [self showAlbumList];
-    } else {
-        ALAssetsLibrary *assetsLibiary = [[ALAssetsLibrary alloc] init];
-        [assetsLibiary enumerateGroupsWithTypes:ALAssetsGroupAll
-                                     usingBlock:^(ALAssetsGroup *assetsGroup, BOOL *stop)
-         {
-             if (assetsGroup == nil && *stop ==  NO) {
-                 [self showAlbumList];
-             }
-             
-             NSString *assetsGroupID= [assetsGroup valueForProperty:ALAssetsGroupPropertyPersistentID];
-             if ([assetsGroupID isEqualToString:propwetyID]) {
-                 *stop = YES;
-                 NSURL *assetsGroupURL = [assetsGroup valueForProperty:ALAssetsGroupPropertyURL];
-                 DNAlbumTableViewController *albumTableViewController = [[DNAlbumTableViewController alloc] init];
-                 DNImageFlowViewController *imageFlowController = [[DNImageFlowViewController alloc] initWithGroupURL:assetsGroupURL];
-                 [self setViewControllers:@[albumTableViewController,imageFlowController]];
-             }
-         }
-                                   failureBlock:^(NSError *error)
-         {
-             [self showAlbumList];
-         }];
-    }
+    [self authorizationPhotoLibrary];
 }
 
 
@@ -81,11 +150,29 @@ ALAssetsFilter * ALAssetsFilterFromDNImagePickerControllerFilterType(DNImagePick
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 #pragma mark - priviate methods
+
 - (void)showAlbumList
 {
     DNAlbumTableViewController *albumTableViewController = [[DNAlbumTableViewController alloc] init];
     [self setViewControllers:@[albumTableViewController]];
+}
+
+- (void)showImageFlow : (NSURL *)assetsGroupURL
+{
+    DNAlbumTableViewController *albumTableViewController = [[DNAlbumTableViewController alloc] init];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    
+    DNImageFlowViewController *imageFlowController = [[DNImageFlowViewController alloc] initWithIdentifier:[DNPickerHelper fetchAlbumIdentifier]];
+    [self setViewControllers:@[albumTableViewController,imageFlowController]];
+    
+#else
+    
+    DNImageFlowViewController *imageFlowController = [[DNImageFlowViewController alloc] initWithGroupURL:assetsGroupURL];
+    [self setViewControllers:@[albumTableViewController,imageFlowController]];
+    
+#endif
 }
 
 #pragma mark - UINavigationController
